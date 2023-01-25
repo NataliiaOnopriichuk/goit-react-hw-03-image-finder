@@ -1,6 +1,7 @@
 import s from './Searchbar.module.css';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
+import { BsSearch } from 'react-icons/bs';
 
 export class Searchbar extends Component {
   state = {
@@ -12,9 +13,14 @@ export class Searchbar extends Component {
     this.setState({ inputValue: value });
   };
 
+  resetInputValue = () => {
+    this.setState({ inputValue: '' });
+  };
+
   onSubmit = e => {
     e.preventDefault();
     this.props.onSubmit(this.state.inputValue);
+    this.resetInputValue();
   };
 
   render() {
@@ -22,7 +28,9 @@ export class Searchbar extends Component {
       <header className={s.Searchbar}>
         <form className={s.SearchForm} onSubmit={this.onSubmit}>
           <button type="submit" className={s.SearchFormButton}>
-            <span className={s.SearchFormButtonLabel}>Search</span>
+            <span>
+              <BsSearch className={s.SearchFormButtonLabel} />
+            </span>
           </button>
 
           <input
