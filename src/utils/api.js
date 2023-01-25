@@ -9,12 +9,12 @@ export const getSearchedNewsApi = (query, page) => {
   return axios
     .get("/api", {
       params: {
+        key: API_KEY,
         q: query,
         page,
         per_page: 12,
         image_type: "photo",
         orientation: "horizontal",
-        key: API_KEY,
       },
     })
     .then((response) => response.data);

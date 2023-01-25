@@ -56,7 +56,7 @@ export class ImageGallery extends Component {
 
   render() {
     const { dataImages, isLoading, error } = this.state;
-    if (error) return <p>{error}</p>;
+    if (error) return <p>Виникла помилка при завантаженні {error}</p>;
     return (
       <>
         <ul className={s.ImageGallery}>
