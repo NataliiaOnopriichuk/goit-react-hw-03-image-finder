@@ -10,7 +10,7 @@ export const getSearchedNewsApi = (query, page) => {
     .get("/api", {
       params: {
         q: query,
-        page: 1,
+        page,
         per_page: 12,
         image_type: "photo",
         orientation: "horizontal",
