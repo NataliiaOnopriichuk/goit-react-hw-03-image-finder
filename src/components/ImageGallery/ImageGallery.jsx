@@ -9,7 +9,7 @@ import { Button } from 'components/Button/Button';
 export class ImageGallery extends Component {
   state = {
     query: '',
-    dataArray: [],
+    dataImages: [],
     page: 1,
     error: null,
     isLoading: false,
@@ -24,55 +24,59 @@ export class ImageGallery extends Component {
 
   async componentDidUpdate(prevProps, prevState) {
     if (prevProps.query !== this.props.query) {
-      this.setState({ isLoading: true });
-      try {
-        const data = await getSearchedNewsApi(
-          this.props.query,
-          this.state.page
-        );
-        this.setState({ dataArray: data.hits });
-      } catch (error) {
-        this.setState({ error: error.message });
-      } finally {
-        this.setState({ isLoading: false });
-      }
+      this.getSearchedImages();
     }
 
     if (prevState.page !== this.state.page && this.state.page !== 1) {
       this.setState({ isLoading: true });
-      try {
-        const data = await getSearchedNewsApi(
-          this.props.query,
-          this.state.page
-        );
-        this.setState(prev => ({
-          dataArray: [...prev.dataArray, ...data.hits],
-        }));
-      } catch (error) {
-        this.setState({ error: error.message });
-      } finally {
-        this.setState({ isLoading: false });
-      }
+      this.getSearchedImages();
     }
   }
+
+  getSearchedImages = async () => {
+    this.setState({ isLoading: true });
+    try {
+      const data = await getSearchedNewsApi(this.props.query, this.state.page);
+      this.setState(prev => ({
+        dataImages:
+          this.state.page === 1
+            ? data.hits
+            : [...prev.dataImages, ...data.hits],
+      }));
+    } catch (error) {
+      this.setState({ error: error.message });
+    } finally {
+      this.setState({ isLoading: false });
+    }
+  };
 
   changePageOnClick = () => {
     this.setState(prev => ({ page: prev.page + 1 }));
   };
 
   render() {
-    const { dataArray, isLoading, error } = this.state;
+    const { dataImages, isLoading, error } = this.state;
     if (error) return <p>{error}</p>;
     return (
-      <ul className={s.ImageGallery}>
-        <ImageGalleryItem dataArray={dataArray} />
-        {isLoading && <Loader />}
-        {dataArray.length > 0 && <Button onClick={this.changePageOnClick} />}
-      </ul>
+      <>
+        <ul className={s.ImageGallery}>
+          <ImageGalleryItem
+            dataImages={dataImages}
+            openModal={this.props.openModal}
+          />
+        </ul>
+        <div style={{ textAlign: 'center' }}>
+          {!isLoading && dataImages.length >= 12 && (
+            <Button onClick={this.changePageOnClick} />
+          )}
+          {isLoading && <Loader />}
+        </div>
+      </>
     );
   }
 }
 
 ImageGallery.protoTypes = {
   query: PropTypes.string.isRequired,
+  openModal: PropTypes.func.isRequired,
 };

@@ -1,9 +1,14 @@
-// import s from './Loader.module.css';
+import { RotatingLines } from 'react-loader-spinner';
 import React from 'react';
-// import PropTypes from 'prop-types';
 
-export const Loader = props => {
-  return <p>Loading...</p>;
+export const Loader = () => {
+  return (
+    <RotatingLines
+      strokeColor="grey"
+      strokeWidth="5"
+      animationDuration="0.75"
+      width="96"
+      visible={true}
+    />
+  );
 };
-
-// Loader.propTypes = {};
