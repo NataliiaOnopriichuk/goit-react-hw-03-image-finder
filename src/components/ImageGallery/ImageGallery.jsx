@@ -17,7 +17,7 @@ export class ImageGallery extends Component {
 
   static getDerivedStateFromProps(newProps, state) {
     if (newProps.query !== state.query) {
-      return { page: 1, query: newProps.query };
+      return { page: 1, query: newProps.query, dataImages: [] };
     }
     return null;
   }
