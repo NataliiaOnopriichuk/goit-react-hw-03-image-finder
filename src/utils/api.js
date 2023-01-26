@@ -8,7 +8,7 @@ axios.defaults.baseURL = "https://pixabay.com";
 
 export const getSearchedNewsApi = async (query, page) => {
   return await axios
-    .get('/api', {
+    .get('/api/', {
       params: {
         q: query,
         page,
