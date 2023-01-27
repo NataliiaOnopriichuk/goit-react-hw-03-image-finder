@@ -2,7 +2,7 @@ import { ImageGalleryItem } from 'components/ImageGalleryItem/ImageGalleryItem';
 import s from './ImageGallery.module.css';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import { getSearchedNewsApi } from 'utils/api.js';
+import { getSearchedNewsApi } from 'service/api.js';
 import { Loader } from 'components/Loader/Loader';
 import { Button } from 'components/Button/Button';
 
@@ -23,12 +23,10 @@ export class ImageGallery extends Component {
   }
 
   async componentDidUpdate(prevProps, prevState) {
-    if (prevProps.query !== this.props.query) {
-      this.getSearchedImages();
-    }
-
-    if (prevState.page !== this.state.page && this.state.page !== 1) {
-      this.setState({ isLoading: true });
+    if (
+      prevProps.query !== this.props.query ||
+      (prevState.page !== this.state.page && this.state.page !== 1)
+    ) {
       this.getSearchedImages();
     }
   }
@@ -38,10 +36,7 @@ export class ImageGallery extends Component {
     try {
       const data = await getSearchedNewsApi(this.props.query, this.state.page);
       this.setState(prev => ({
-        dataImages:
-          this.state.page === 1
-            ? data.hits
-            : [...prev.dataImages, ...data.hits],
+        dataImages: [...prev.dataImages, ...data.hits],
       }));
     } catch (error) {
       this.setState({ error: error.message });
@@ -56,14 +51,17 @@ export class ImageGallery extends Component {
 
   render() {
     const { dataImages, isLoading, error } = this.state;
-    if (error) return <p>Виникла помилка при завантаженні {error}</p>;
+    if (error) return <p>Download error {error}</p>;
     return (
       <>
         <ul className={s.ImageGallery}>
-          <ImageGalleryItem
-            dataImages={dataImages}
-            openModal={this.props.openModal}
-          />
+          {dataImages.map(el => (
+            <ImageGalleryItem
+              key={el.id}
+              {...el}
+              openModal={this.props.openModal}
+            />
+          ))}
         </ul>
         <div style={{ textAlign: 'center' }}>
           {!isLoading && dataImages.length >= 12 && (
